@@ -1,0 +1,145 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import classification_report
+dataframe=pd.read_excel('cancer patient data sets.xlsx')
+del dataframe['Patient Id']
+
+#severity=dataframe['Level']
+# for i in range(len(severity)):
+#     if(severity[i]=='Low'):
+#         severity[i]=0
+#     elif(severity[i]=='Medium'):
+#          severity[i]=1
+#     elif(severity[i]=='High'):
+#          severity[i]=2
+        
+# relevance of attribute of dataframe
+age_level=dataframe['Age'].corr(dataframe['Level'])
+gender_level=dataframe['Gender'].corr(dataframe['Level'])
+Pollution_level=dataframe['Air Pollution'].corr(dataframe['Level'])
+Alcohol_level=dataframe['Alcohol Usage'].corr(dataframe['Level'])
+dust_level=dataframe['Dust Allergy'].corr(dataframe['Level'])
+hazard_level=dataframe['Occupational Hazards'].corr(dataframe['Level'])
+risk_level=dataframe['Genetic Risk'].corr(dataframe['Level'])
+lung_level=dataframe['chronic Lung Disease'].corr(dataframe['Level'])
+diet_level=dataframe['Balanced Diet'].corr(dataframe['Level'])
+obestiy_level=dataframe['Obesity'].corr(dataframe['Level'])
+smoking_level=dataframe['Smoking'].corr(dataframe['Level'])
+smoker_level=dataframe['Passive Smoker'].corr(dataframe['Level'])
+chest_level=dataframe['Chest Pain'].corr(dataframe['Level'])
+blood_level=dataframe['Coughing of Blood'].corr(dataframe['Level'])
+fatigue_level=dataframe['Weariness'].corr(dataframe['Level'])
+weight_level=dataframe['Weight Loss'].corr(dataframe['Level'])
+breath_level=dataframe['Shortness of Breath'].corr(dataframe['Level'])
+wheezing_level=dataframe['Wheezing'].corr(dataframe['Level'])
+swallowing_level=dataframe['Swallowing Difficulty'].corr(dataframe['Level'])
+nails_level=dataframe['Clubbing of Finger Nails'].corr(dataframe['Level'])
+clod_level=dataframe['Frequent Cold'].corr(dataframe['Level'])
+dry_level=dataframe['Dry Cough'].corr(dataframe['Level'])
+snoring_level=dataframe['Snoring'].corr(dataframe['Level'])
+print(Pollution_level)
+print(Alcohol_level)
+print(dust_level)
+print(hazard_level)
+print(risk_level)
+print(lung_level)
+print(diet_level)
+print(obestiy_level)
+print(smoking_level)
+print(smoker_level)
+print(chest_level)
+print(blood_level)
+print(fatigue_level)
+y=dataframe.iloc[:,-1]
+#new data frame
+#reading from the data frame 
+Pollution_level=dataframe['Air Pollution']
+Alcohol_level=dataframe['Alcohol Usage']
+dust_level=dataframe['Dust Allergy']
+hazard_level=dataframe['Occupational Hazards']
+risk_level=dataframe['Genetic Risk']
+lung_level=dataframe['chronic Lung Disease']
+diet_level=dataframe['Balanced Diet']
+obestiy_level=dataframe['Obesity']
+smoking_level=dataframe['Smoking']
+smoker_level=dataframe['Passive Smoker']
+chest_level=dataframe['Chest Pain']
+blood_level=dataframe['Coughing of Blood']
+fatigue_level=dataframe['Weariness']
+dataframe=pd.DataFrame({'Air Pollution':Pollution_level,
+                       'Alcohol Usage':Alcohol_level,
+                       'Dust Allergy':dust_level,
+                       'Occupational Hazards':hazard_level,
+                       'Genetic Risk':risk_level,
+                       'Lung Disease':lung_level,
+                       'Balanced Diet':diet_level,
+                       'Obesity':obestiy_level,
+                       'Smoking':smoking_level,
+                       'Passive Smoker':smoker_level,
+                       'Chest Pain':chest_level,
+                       'Coughing of Blood':blood_level,
+                       'Weariness':fatigue_level                
+                       
+                       })
+X_train,X_test,y_train,y_test=train_test_split(dataframe,y,test_size=0.2)
+axis=[]
+for h in range(len(y_test)):
+    axis.append(h)
+from sklearn.svm import SVC
+svm=SVC()
+svm.fit(X_train,y_train)
+y_pred=svm.predict(X_test)
+print(y_pred)
+# xgboost
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score
+xgb_clf=XGBClassifier()
+xgb_clf.fit(X_train,y_train)
+res=xgb_clf.predict(X_test)
+xgb_acc=accuracy_score(y_test,res)
+print(xgb_acc)
+import xgboost as xgb
+import matplotlib.pyplot as plt
+xgb.plot_importance(xgb_clf)
+plt.rcParams['figure.figsize'] = [10, 4]
+plt.show()
+import matplotlib.pyplot as plt
+plt.plot(axis,y_test, label="actual", color='r')
+plt.plot(axis,res, label="predicted", color='g')
+plt.xlabel('testing instance')
+plt.ylabel('severity level')
+plt.legend()
+plt.show()
+# knn classifier
+from sklearn.neighbors import KNeighborsClassifier
+knn=KNeighborsClassifier(n_neighbors=15)
+knn.fit(X_train,y_train)
+y=knn.predict(X_test)
+val=accuracy_score(y_test,y)
+print(val)
+pre=precision_score(y_test,y,average='macro')
+print(pre)
+reca=recall_score(y_test,y,average='macro')
+print(reca)
+# printing confusion matrix 
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(y_test,y)
+print(cm)
+from sklearn import metrics
+import matplotlib.pyplot as plt
+cm_display=metrics.ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=[0,1,2])
+cm_display.plot()
+plt.show()
+import matplotlib.pyplot as plt
+plt.plot(axis,y_test, label="actual", color='r')
+plt.plot(axis,y, label="predicted", color='g')
+plt.xlabel('testing instance')
+plt.ylabel('severity level')
+plt.legend()
+plt.show()
